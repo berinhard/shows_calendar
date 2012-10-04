@@ -1,8 +1,8 @@
 # coding: utf-8
 import re
 import os
-from datetime import datetime
-from collections import namedtuple
+import csv
+from datetime import datetime, timedelta
 
 import requests
 from templater import Templater
@@ -34,6 +34,20 @@ class Show():
     def __repr__(self):
         return self.name + ' - ' + self.date_and_time.strftime('%d/%m/%Y')
 
+    def to_csv_row(self):
+        end_time = self.date_and_time + timedelta(seconds=2 * 60 * 60)
+        return [
+            self.name,
+            self.date_and_time.strftime('%d/%m/%Y'),
+            self.date_and_time.strftime('%I:%M:%S %p'),
+            end_time.strftime('%d/%m/%Y'),
+            end_time.strftime('%I:%M:%S %p'),
+            'False',
+            self.price,
+            self.place,
+            'False'
+        ]
+
 
 def get_shows_from_html(html_content):
     regexp_marker = re.compile(r'{{([a-zA-Z0-9_-]*)}}')
@@ -51,7 +65,6 @@ def get_shows_from_html(html_content):
 
     return shows
 
-
 response = requests.get(URL)
 shows = get_shows_from_html(response.content)
 
@@ -59,3 +72,5 @@ csv_header = 'Subject,Start Date,Start Time,End Date,End Time,All Day Event,Desc
 with open(os.path.join(PROJECT_ROOT, 'calendar.csv'), 'w') as csvfile:
     csv_calendar = csv.writer(csvfile, delimiter=',')
     csv_calendar.writerow(csv_header.split(','))
+    for show in shows:
+        csv_calendar.writerow(show.to_csv_row())
