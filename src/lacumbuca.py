@@ -55,5 +55,7 @@ def get_shows_from_html(html_content):
 response = requests.get(URL)
 shows = get_shows_from_html(response.content)
 
-for show in shows:
-    print show
+csv_header = 'Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private'
+with open(os.path.join(PROJECT_ROOT, 'calendar.csv'), 'w') as csvfile:
+    csv_calendar = csv.writer(csvfile, delimiter=',')
+    csv_calendar.writerow(csv_header.split(','))
