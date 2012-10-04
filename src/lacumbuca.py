@@ -38,7 +38,7 @@ class Show():
 def get_shows_from_html(html_content):
     regexp_marker = re.compile(r'{{([a-zA-Z0-9_-]*)}}')
     regexp_tags = re.compile(r'<[^>]*?>')
-    template_fp = open(os.path.join(PROJECT_ROOT, 'crawler', 'template.html'))
+    template_fp = open(os.path.join(PROJECT_ROOT, 'src', 'template.html'))
     template = Templater(template_fp.read().strip(), marker=regexp_marker)
     data = template.parse(html_content)
     shows = []
@@ -54,3 +54,6 @@ def get_shows_from_html(html_content):
 
 response = requests.get(URL)
 shows = get_shows_from_html(response.content)
+
+for show in shows:
+    print show
