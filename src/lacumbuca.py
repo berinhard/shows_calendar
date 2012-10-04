@@ -56,9 +56,10 @@ def get_shows_from_html(html_content):
 
     for evento in data['info'].split('</blockquote>'):
         raw_show = regexp_tags.sub('', evento).strip().split('\n')
-        show = Show.from_raw_data(raw_show)
-        if show:
-            shows.append(show)
+        try:
+            shows.append(Show.from_raw_data(raw_show))
+        except ValueError:
+            pass
 
     return shows
 
