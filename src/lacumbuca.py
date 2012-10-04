@@ -45,7 +45,6 @@ class Show():
             'False'
         ]
 
-
 def get_shows_from_html(html_content):
     regexp_marker = re.compile(r'{{([a-zA-Z0-9_-]*)}}')
     regexp_tags = re.compile(r'<[^>]*?>')
@@ -63,12 +62,16 @@ def get_shows_from_html(html_content):
 
     return shows
 
-response = requests.get(URL)
-shows = get_shows_from_html(response.content)
+def main():
+    response = requests.get(URL)
+    shows = get_shows_from_html(response.content)
 
-csv_header = 'Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private'
-with open(os.path.join(PROJECT_ROOT, 'calendar.csv'), 'w') as csvfile:
-    csv_calendar = csv.writer(csvfile, delimiter=',')
-    csv_calendar.writerow(csv_header.split(','))
-    for show in shows:
-        csv_calendar.writerow(show.to_csv_row())
+    csv_header = 'Subject,Start Date,Start Time,End Date,End Time,All Day Event,Description,Location,Private'
+    with open(os.path.join(PROJECT_ROOT, 'calendar.csv'), 'w') as csvfile:
+        csv_calendar = csv.writer(csvfile, delimiter=',')
+        csv_calendar.writerow(csv_header.split(','))
+        for show in shows:
+            csv_calendar.writerow(show.to_csv_row())
+
+if __name__ == '__main__':
+    main()
